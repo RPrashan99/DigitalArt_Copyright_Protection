@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import UploadArt from './components/UploadArt';
-import VerifyArt from './components/VerifyArt';
-import { getAccount, getContract } from './utils/blockchain';
+import UploadArt from './components/UploadArt.js';
+import VerifyArt from './components/VerifyArt.js';
+import { getAccount, getContract } from './utils/blockchain.js';
 
 function App() {
   let isRequestPending = false;

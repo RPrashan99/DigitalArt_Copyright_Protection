@@ -1,5 +1,5 @@
-import { generateHash } from "../utils/hash";
-import { getContract } from "../utils/blockchain";
+import { generateHash } from "../utils/hash.js";
+import { getContract } from "../utils/blockchain.js";
 
 export default function VerifyArt() {
 
@@ -9,7 +9,7 @@ export default function VerifyArt() {
         const hash = await generateHash(file);
         
         const contract = await getContract();
-        const owner = await contract.VerifyArt(hash);
+        const owner = await contract.verifyArt(hash);
 
         if(owner === "0x0000000000000000000000000000000000000000"){
             alert("This artwork is not registered.");
