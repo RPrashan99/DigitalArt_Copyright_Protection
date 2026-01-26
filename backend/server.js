@@ -12,7 +12,12 @@ app.use(cors());
 
 app.post('/upload', upload.single("file"), async (req, res) => {
     try{
+        if (!req.file) {
+            return res.status(400).json({ error: "No file uploaded!" });
+        }
+
         const ipfsPath = await uploadToIPFS(req.file.buffer);
+        console.log("Uploaded to IPFS:", ipfsPath);
         res.json({ipfsPath});
     } catch(err){
         res.status(500).json({error: "IPFS upload failed!"})
