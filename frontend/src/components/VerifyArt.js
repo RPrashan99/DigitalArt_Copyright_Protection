@@ -7,20 +7,26 @@ export default function VerifyArt() {
     const [file, setFile] = useState("");
     
     async function handleChange(e) {
-    setFile(e.target.files[0]);
+      setFile(e.target.files[0]);
     }
 
     async function handleVerify(e){
-        const hash = await generateHash(file);
-        
-        const contract = await getContract();
-        const owner = await contract.verifyArt(hash);
 
-        if(owner === "0x0000000000000000000000000000000000000000"){
-            alert("This artwork is not registered.");
-        } else {
-            alert(`This artwork is owned by: ${owner}`);
-        }
+      if(!file){
+        alert("Please upload a file to verify.");
+        return;
+      }
+
+      const hash = await generateHash(file);
+      
+      const contract = await getContract();
+      const owner = await contract.verifyArt(hash);
+
+      if(owner === "0x0000000000000000000000000000000000000000"){
+          alert("This artwork is not registered.");
+      } else {
+          alert(`This artwork is owned by: ${owner}`);
+      }
     }
 
     return (

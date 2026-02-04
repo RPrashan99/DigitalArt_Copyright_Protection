@@ -13,6 +13,11 @@ export default function UploadArt() {
 
   async function handleUpload() {
 
+    if(!file){
+        alert("Please upload a file to register.");
+        return;
+      }
+
     console.log("Uploading file:", file.name);
     const artHash = await generateHash(file);
     console.log("Generated hash:", artHash);
