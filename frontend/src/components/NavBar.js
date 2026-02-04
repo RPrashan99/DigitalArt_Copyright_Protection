@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { getAccount, getContract } from "../utils/blockchain.js";
+import { useGlobalState } from "./GlobalContext.js";
 
 export default function NavBar() {
   let isRequestPending = false;
+
+  const {walletAddress, setWalletAddress} = useGlobalState();
 
   const [account, setAccount] = useState('');
   const [contract, setContract] = useState(null);
@@ -14,7 +17,7 @@ export default function NavBar() {
         isRequestPending = true;
         const account = await getAccount();
         setAccount(account);
-
+        setWalletAddress(account);
         console.log('Connected account:', account);
 
         const contractInstance = await getContract();
@@ -68,8 +71,8 @@ export default function NavBar() {
             Sign In
           </button>
           <div className="wallet-info">
-            {account ? (
-              <p>Connected: {account.substring(0, 6)}...{account.substring(38)}</p>
+            {walletAddress ? (
+              <p className="text-sm text-slate-700">Connected: {walletAddress.substring(0, 6)}...{walletAddress.substring(38)}</p>
             ) : (
               <button className="bg-slate-900 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-200 transition-all active:scale-95"
                 onClick={connectWallet}>

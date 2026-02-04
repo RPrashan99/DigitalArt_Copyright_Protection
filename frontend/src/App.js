@@ -3,9 +3,12 @@ import { getAccount, getContract } from './utils/blockchain.js';
 import NavBar from './components/NavBar.js';
 import UploadArt from './components/UploadArt.js';
 import VerifyArt from './components/VerifyArt.js';
+import { useGlobalState } from './components/GlobalContext.js';
 
 function App() {
   let isRequestPending = false;
+
+  const {walletAddress, setWalletAddress} = useGlobalState();
 
   const [account, setAccount] = useState('');
   const [contract, setContract] = useState(null);
@@ -17,6 +20,7 @@ function App() {
         isRequestPending = true;
         const account = await getAccount();
         setAccount(account);
+        setWalletAddress(account);
 
         console.log('Connected account:', account);
 
@@ -58,13 +62,19 @@ function App() {
           </div>
 
           <div className="flex items-center gap-4">
-            <button 
-              className='bg-slate-900 hover:bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold text-lg transition-all transform hover:-translate-y-1 shadow-xl hover:shadow-blue-200 flex items-center gap-3' 
-              onClick={connectWallet}
-            >
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              Connect Wallet
-            </button>
+            {walletAddress ? (
+              <span className="text-green-600 font-medium">
+                Wallet Connected
+              </span>
+            ) : (
+              <button 
+                className='bg-slate-900 hover:bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold text-lg transition-all transform hover:-translate-y-1 shadow-xl hover:shadow-blue-200 flex items-center gap-3' 
+                onClick={connectWallet}
+              >
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                Connect Wallet
+              </button>
+            )}
             
             <button className="text-slate-600 font-medium hover:text-blue-600 transition-colors">
               Learn More →
