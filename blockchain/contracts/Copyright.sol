@@ -9,6 +9,7 @@ contract Copyright {
     }
 
     mapping(bytes32 => Art) private artRegistry;
+    mapping(address => bytes32[]) private ownerToArt;
 
     // Track transfers
     event OwnershipTransferred(
@@ -21,6 +22,7 @@ contract Copyright {
     function registerArt(bytes32 _artHash, string memory _ipfsHash) public {
         require(artRegistry[_artHash].owner == address(0), "Art already registered");
         artRegistry[_artHash] = Art(msg.sender, _ipfsHash);
+        ownerToArt[msg.sender].push(_artHash);
     }
 
     function verifyArt(bytes32 _artHash) public view returns (address) {
@@ -37,7 +39,25 @@ contract Copyright {
 
         address previousOwner = art.owner;
         art.owner = _newOwner;
+
+        _removeArt(_artHash, previousOwner);
+        ownerToArt[_newOwner].push(_artHash);
         
         emit OwnershipTransferred(_artHash, previousOwner, _newOwner, block.timestamp);
+    }
+
+    function getArtByOwner(address _owner) public view returns (bytes32[] memory) {
+        return ownerToArt[_owner];
+    }
+
+    function _removeArt(bytes32 _artHash, address _owner) internal {
+        
+        for(uint i = 0; i < ownerToArt[_owner].length; i++) {
+            if(ownerToArt[_owner][i] == _artHash) {
+                ownerToArt[_owner][i] = ownerToArt[_owner][ownerToArt[_owner].length - 1];
+                ownerToArt[_owner].pop();
+                break;
+            }
+        }
     }
 }

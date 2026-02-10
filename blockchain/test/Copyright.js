@@ -75,11 +75,47 @@ describe("Token contract", function () {
 
     it("Should fail to transfer ownership of art that no registered", async function () {
         const artHash = ethers.keccak256(ethers.toUtf8Bytes("ArtPiece1"));
-        const ipfsHash = "QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco";
 
         await expect(
             copyright.transferOwner(artHash, addr1.address)
         ).to.be.revertedWith("Art not registered");
     })
 
+    it("Should get all art owned by an address", async function () {
+        const artHash1 = ethers.keccak256(ethers.toUtf8Bytes("ArtPiece1"));
+        const artHash2 = ethers.keccak256(ethers.toUtf8Bytes("ArtPiece2"));
+        const ipfsHash = "QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco";
+        const ipfsHash2 = "QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6ucf";
+
+        await copyright.registerArt(artHash1, ipfsHash);
+        await copyright.registerArt(artHash2, ipfsHash2);
+
+        const ownedArt = await copyright.getArtByOwner(owner.address);
+        expect(ownedArt.length).to.equal(2);
+        expect(ownedArt[0]).to.equal(artHash1);
+        expect(ownedArt[1]).to.equal(artHash2);
+
+    });
+
+    it("Should transfered art not be in owner arts", async function () {
+        const artHash1 = ethers.keccak256(ethers.toUtf8Bytes("ArtPiece1"));
+        const artHash2 = ethers.keccak256(ethers.toUtf8Bytes("ArtPiece2"));
+        const ipfsHash = "QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco";
+        const ipfsHash2 = "QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6ucf";
+
+        await copyright.registerArt(artHash1, ipfsHash);
+        await copyright.registerArt(artHash2, ipfsHash2);
+
+        const ownedArt = await copyright.getArtByOwner(owner.address);
+        expect(ownedArt.length).to.equal(2);
+        expect(ownedArt[0]).to.equal(artHash1);
+        expect(ownedArt[1]).to.equal(artHash2);
+
+        await copyright.transferOwner(artHash1, addr1.address);
+
+        const newOwnedArt = await copyright.getArtByOwner(owner.address);
+        expect(newOwnedArt.length).to.equal(1);
+        expect(newOwnedArt[0]).to.equal(artHash2);
+
+    });
 });
