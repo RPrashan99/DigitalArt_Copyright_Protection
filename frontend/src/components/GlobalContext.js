@@ -9,11 +9,11 @@ export const GlobalProvider = ({ children }) => {
 
   const saveWalletAddress = async (address) => {
     setWalletAddress(address);
-    localStorage.setItem('wallet', address);
+    sessionStorage.setItem('wallet', address);
   }
 
   useEffect(() => {
-    const wallet = localStorage.getItem('wallet');
+    const wallet = sessionStorage.getItem('wallet');
 
     if(wallet){
       setWalletAddress(wallet);
