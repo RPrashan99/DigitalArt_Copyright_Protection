@@ -90,10 +90,14 @@ describe("Token contract", function () {
         await copyright.registerArt(artHash1, ipfsHash);
         await copyright.registerArt(artHash2, ipfsHash2);
 
-        const ownedArt = await copyright.getArtByOwner();
+        const [ownedArt, ownedArtHashes] = await copyright.getArtByOwner();
         expect(ownedArt.length).to.equal(2);
         expect(ownedArt[0]).to.equal(ipfsHash);
         expect(ownedArt[1]).to.equal(ipfsHash2);
+
+        expect(ownedArtHashes.length).to.equal(2);
+        expect(ownedArtHashes[0]).to.equal(artHash1);
+        expect(ownedArtHashes[1]).to.equal(artHash2);
 
     });
 
@@ -106,16 +110,23 @@ describe("Token contract", function () {
         await copyright.registerArt(artHash1, ipfsHash);
         await copyright.registerArt(artHash2, ipfsHash2);
 
-        const ownedArt = await copyright.getArtByOwner();
+        const [ownedArt, ownedArtHashes] = await copyright.getArtByOwner();
         expect(ownedArt.length).to.equal(2);
         expect(ownedArt[0]).to.equal(ipfsHash);
         expect(ownedArt[1]).to.equal(ipfsHash2);
 
+        expect(ownedArtHashes.length).to.equal(2);
+        expect(ownedArtHashes[0]).to.equal(artHash1);
+        expect(ownedArtHashes[1]).to.equal(artHash2);
+
         await copyright.transferOwner(artHash1, addr1.address);
 
-        const newOwnedArt = await copyright.getArtByOwner();
+        const [newOwnedArt, newOwnedArtHashes] = await copyright.getArtByOwner();
         expect(newOwnedArt.length).to.equal(1);
         expect(newOwnedArt[0]).to.equal(ipfsHash2);
+
+        expect(newOwnedArtHashes.length).to.equal(1);
+        expect(newOwnedArtHashes[0]).to.equal(artHash2);
 
     });
 });

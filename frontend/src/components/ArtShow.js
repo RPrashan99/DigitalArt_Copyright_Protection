@@ -26,12 +26,15 @@ export default function ArtShow() {
   const {walletAddress} = useGlobalState();
 
   const [artList, setArtList] = useState([]);
+  const [artHashlist, setArtHashlist] = useState([]);
 
   const getArtPieces = async () => {
     const contract = await getContract();
-    await contract.getArtByOwner().then(async (artHashes) => {
-      console.log('Art pieces owned by the user:', artHashes);
-      const images = await getFromIPFS(artHashes);
+    await contract.getArtByOwner().then(async ([ipfsHashes, artHashes]) => {
+      console.log('Art pieces owned by the user:', ipfsHashes);
+      console.log('Art pieces hashes owned by the user:', artHashes);
+      setArtHashlist(artHashes);
+      const images = await getFromIPFS(ipfsHashes);
       images.map((image) => {
         console.log('Images:', image);
       });
@@ -57,7 +60,7 @@ export default function ArtShow() {
             <div className="grid grid-cols-3 gap-4 mt-6 w-full p-2 border rounded-lg shadow-lg">
               {artList.map((src, id) => (
                 <div key={id} className="flex col-span-1 bg-gray-300 p-2 border rounded-lg shadow-lg hover:scale-105 transition-transform duration-300 justify-center">
-                  <img src={src} alt={`Art ${id + 1}`} className="w-128 h-auto rounded-lg shadow-md" />
+                  <img src={src} alt={`Art ${id + 1}`} className="w-128 h-64 object-cover rounded-lg shadow-md" />
                 </div>
               ))}
             </div>
