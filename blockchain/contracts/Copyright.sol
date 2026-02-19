@@ -46,8 +46,8 @@ contract Copyright {
         emit OwnershipTransferred(_artHash, previousOwner, _newOwner, block.timestamp);
     }
 
-    function getArtByOwner(address _owner) public view returns (bytes32[] memory) {
-        return ownerToArt[_owner];
+    function getArtByOwner() public view returns (bytes32[] memory) {
+        return ownerToArt[msg.sender];
     }
 
     function _removeArt(bytes32 _artHash, address _owner) internal {
