@@ -28,3 +28,31 @@ export async function uploadToIPFS(content) {
     throw error;
   }
 }
+
+export async function getFromIPFS(hash) {
+  try {
+    const stream = ipfs.cat(hash);
+    const chunks = [];
+    for await (const chunk of stream) {
+      chunks.push(chunk);
+    }
+    const data = Buffer.concat(chunks);
+    return data;
+  } catch (error) {
+    console.error('Error fetching from IPFS:', error);
+    throw error;
+  }
+}
+
+export async function getFilesFromIPFS(hashes) {
+  try{
+    const results = await Promise.all(hashes.map(async (hash) => {
+      const data = getFromIPFS(hash);
+      return data;
+    }));
+    return results;
+  }catch(err){
+    console.error('Error fetching files from IPFS:', err);
+    throw err;
+  }
+}
