@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { getAccount, getContract } from './utils/blockchain.js';
-import NavBar from './components/NavBar.js';
 import UploadArt from './components/UploadArt.js';
 import VerifyArt from './components/VerifyArt.js';
 import { useGlobalState } from './components/GlobalContext.js';
@@ -8,7 +7,7 @@ import { useGlobalState } from './components/GlobalContext.js';
 function App() {
   let isRequestPending = false;
 
-  const {walletAddress, setWalletAddress} = useGlobalState();
+  const { walletAddress, saveWalletAddress } = useGlobalState();
 
   const [account, setAccount] = useState('');
   const [contract, setContract] = useState(null);
@@ -20,7 +19,7 @@ function App() {
         isRequestPending = true;
         const account = await getAccount();
         setAccount(account);
-        setWalletAddress(account);
+        saveWalletAddress(account);
 
         console.log('Connected account:', account);
 
@@ -43,7 +42,6 @@ function App() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <NavBar />
       <div className='flex flex-col lg:flex-row gap-16 justify-center items-center min-h-[85vh] px-8 md:px-20 py-12 bg-gradient-to-br from-slate-50 to-blue-50'>
         {/* Left Content Column */}
         <div className='flex flex-col w-full lg:w-1/2 space-y-8 animate-in fade-in slide-in-from-left duration-700'>

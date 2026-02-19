@@ -5,7 +5,7 @@ import { useGlobalState } from "./GlobalContext.js";
 export default function NavBar() {
   let isRequestPending = false;
 
-  const {walletAddress, setWalletAddress} = useGlobalState();
+  const {walletAddress, saveWalletAddress } = useGlobalState();
 
   const [account, setAccount] = useState('');
   const [contract, setContract] = useState(null);
@@ -17,7 +17,7 @@ export default function NavBar() {
         isRequestPending = true;
         const account = await getAccount();
         setAccount(account);
-        setWalletAddress(account);
+        saveWalletAddress(account);
         console.log('Connected account:', account);
 
         const contractInstance = await getContract();
@@ -53,10 +53,10 @@ export default function NavBar() {
 
         {/* Navigation Links */}
         <div className="hidden md:flex flex-row gap-8 items-center">
-          {['Home', 'How It Works', 'Contacts', 'Help'].map((item) => (
+          {['Home', 'Art Show', 'How It Works', 'Help'].map((item) => (
             <a 
               key={item}
-              href={`#${item.toLowerCase().replace(/\s+/g, '')}`}
+              href={`${item.toLowerCase().replace(/\s+/g, '')}`}
               className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors relative group"
             >
               {item}
