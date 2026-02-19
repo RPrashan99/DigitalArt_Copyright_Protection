@@ -90,7 +90,7 @@ describe("Token contract", function () {
         await copyright.registerArt(artHash1, ipfsHash);
         await copyright.registerArt(artHash2, ipfsHash2);
 
-        const ownedArt = await copyright.getArtByOwner(owner.address);
+        const ownedArt = await copyright.getArtByOwner();
         expect(ownedArt.length).to.equal(2);
         expect(ownedArt[0]).to.equal(artHash1);
         expect(ownedArt[1]).to.equal(artHash2);
@@ -106,14 +106,14 @@ describe("Token contract", function () {
         await copyright.registerArt(artHash1, ipfsHash);
         await copyright.registerArt(artHash2, ipfsHash2);
 
-        const ownedArt = await copyright.getArtByOwner(owner.address);
+        const ownedArt = await copyright.getArtByOwner();
         expect(ownedArt.length).to.equal(2);
         expect(ownedArt[0]).to.equal(artHash1);
         expect(ownedArt[1]).to.equal(artHash2);
 
         await copyright.transferOwner(artHash1, addr1.address);
 
-        const newOwnedArt = await copyright.getArtByOwner(owner.address);
+        const newOwnedArt = await copyright.getArtByOwner();
         expect(newOwnedArt.length).to.equal(1);
         expect(newOwnedArt[0]).to.equal(artHash2);
 
