@@ -20,12 +20,17 @@ export default function VerifyArt() {
       const hash = await generateHash(file);
       
       const contract = await getContract();
-      const owner = await contract.verifyArt(hash);
+      try{
+        const owner = await contract.verifyArt(hash);
 
-      if(owner === "0x0000000000000000000000000000000000000000"){
-          alert("This artwork is not registered.");
-      } else {
-          alert(`This artwork is owned by: ${owner}`);
+        if(owner === "0x0000000000000000000000000000000000000000"){
+            alert("This artwork is not registered.");
+        } else {
+            alert(`This artwork is owned by: ${owner}`);
+        }
+      }catch(err){
+        console.error("Error verifying art:", err.reason || err);
+        alert("An error occurred: " + (err.reason || err.message || "Unknown error"));
       }
     }
 
