@@ -4,6 +4,7 @@ import { useGlobalState } from "./GlobalContext.js";
 import { getFromIPFS } from "../utils/ipfs.js";
 import ArtTransfer from "./ArtTransfer.js";
 import { ToastContainer, toast } from "react-toastify";
+import "../App.css";
 
 const list = [
   {
@@ -31,6 +32,8 @@ export default function ArtShow() {
   const [artHashlist, setArtHashlist] = useState([]);
   const [selectedArt, setSelectedArt] = useState(null);
   const [showTransferModal, setShowTransferModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const getArtPieces = async () => {
     const contract = await getContract();
@@ -56,11 +59,24 @@ export default function ArtShow() {
     contract.transferOwner(artHash, recipientAddress).then(() => {
       setSelectedArt(null);
       setShowTransferModal(false);
-      toast.info('Art transferred Pending!');
-      getArtPieces();
+      setLoading(true);
     }).catch((error) => {
       console.error('Error transferring art:', error);
     });
+
+    contract.on("OwnershipTransferred", (artHash, previousOwner, newOwner, timestamp) => {
+      console.log(`Ownership transferred for art hash: ${artHash}`);
+      console.log(`Previous Owner: ${previousOwner}`);
+      console.log(`New Owner: ${newOwner}`);
+      console.log(`Timestamp: ${timestamp}`);
+      setSuccess(true);
+    })
+  }
+
+  const handleTransferEnd = () => {
+    setLoading(false);
+    setSuccess(false);
+    getArtPieces();
   }
 
   const handleCloseTransferModal = () => {
@@ -124,6 +140,34 @@ export default function ArtShow() {
             imageSrc={selectedArt !== null ? artList[selectedArt] : null}
           />
       )}
+      {
+        loading && (
+          <div className="fixed flex inset-0 items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col justify-center items-center gap-2">
+              <div className="bg-white p-2 rounded-lg text-xl font-bold">Ownership Transaction Status</div>
+              <div className="flex text-gray-500 rounded-full overflow-hidden">
+                Your transaction status will update automatically once the transfer is complete.
+              </div>
+              {
+                success ? (
+                  <div className="flex flex-col items-center gap-4">
+                    <img src="/success.gif" alt="Success" className="w-12 h-12" />
+                    <button className="flex bg-blue-600 text-lg text-white px-3 py-1 rounded shadow transition duration-300 ease-out animate-fadeIn"
+                      onClick={handleTransferEnd}>
+                      Okay
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="text-lg font-semibold text-yellow-500">Please Wait</div>
+                    <div className="spinner"></div>
+                  </div>
+                )
+              }
+            </div>
+          </div>
+        )
+      }
       <ToastContainer
         position="bottom-right"
         autoClose={3000}
