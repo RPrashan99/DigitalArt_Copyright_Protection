@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getContract } from "../utils/blockchain.js";
 import { useGlobalState } from "./GlobalContext.js";
 import { getFromIPFS } from "../utils/ipfs.js";
+import ArtTransfer from "./ArtTransfer.js";
 
 const list = [
   {
@@ -27,6 +28,8 @@ export default function ArtShow() {
 
   const [artList, setArtList] = useState([]);
   const [artHashlist, setArtHashlist] = useState([]);
+  const [selectedArt, setSelectedArt] = useState(null);
+  const [showTransferModal, setShowTransferModal] = useState(false);
 
   const getArtPieces = async () => {
     const contract = await getContract();
@@ -44,6 +47,26 @@ export default function ArtShow() {
     });
   }
 
+  const hadleTransfer = async (recipientAddress, artHash) => {
+    console.log('Transferring art with hash:', artHash, 'to recipient:', recipientAddress);
+    
+    const contract = await getContract();
+
+    contract.transferOwner(artHash, recipientAddress).then(() => {
+      setSelectedArt(null);
+      setShowTransferModal(false);
+      alert('Art transferred successfully!');
+      getArtPieces();
+    }).catch((error) => {
+      console.error('Error transferring art:', error);
+    });
+  }
+
+  const handleCloseTransferModal = () => {
+    setSelectedArt(null);
+    setShowTransferModal(false);
+  }
+
   useEffect(() => {
     if (walletAddress) {
       getArtPieces();
@@ -59,8 +82,28 @@ export default function ArtShow() {
           artList.length > 0 ? (
             <div className="grid grid-cols-3 gap-4 mt-6 w-full p-2 border rounded-lg shadow-lg">
               {artList.map((src, id) => (
-                <div key={id} className="flex col-span-1 bg-gray-300 p-2 border rounded-lg shadow-lg hover:scale-105 transition-transform duration-300 justify-center">
+                <div key={id} className="relative flex w-132 h-66 col-span-1 bg-gray-300 p-2 border rounded-lg shadow-lg hover:scale-105 transition-transform duration-300 justify-center items-center"
+                  onClick={() => {
+                    if (selectedArt === id) {
+                      setSelectedArt(null);
+                    } else {
+                      setSelectedArt(id);
+                    }
+                  }}
+                >
                   <img src={src} alt={`Art ${id + 1}`} className="w-128 h-64 object-cover rounded-lg shadow-md" />
+
+                  {
+                    selectedArt === id && (
+                      <button className="absolute bottom-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-blue-600 text-lg text-white px-3 py-1 rounded shadow transition duration-300 ease-out animate-fadeIn" 
+                        onClick={(e) => {
+                          e.stopPropagation(); // prevent re-triggering
+                          setShowTransferModal(true);
+                        }}
+                      >
+                        Transfer
+                      </button>
+                  )}
                 </div>
               ))}
             </div>
@@ -71,6 +114,15 @@ export default function ArtShow() {
           <div className="text-center mt-6 text-gray-600">Please connect your wallet to view your art pieces.</div>
         )
       }
+      {
+        showTransferModal && (
+          <ArtTransfer 
+            onClose={handleCloseTransferModal}
+            onTransfer={hadleTransfer}
+            artHash={selectedArt !== null ? artHashlist[selectedArt] : null}
+            imageSrc={selectedArt !== null ? artList[selectedArt] : null}
+          />
+      )}
     </div> 
   );
 }
