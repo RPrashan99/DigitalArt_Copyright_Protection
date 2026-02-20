@@ -32,7 +32,7 @@ export default function VerifyArt() {
         }
       }catch(err){
         console.error("Error verifying art:", err.reason || err);
-        toast.error("An error occurred while verifying the artwork.");
+        toast.error("An error occurred: " + (err.reason || err.message || err));
       }finally{
         setFile("");
         resetFileInput();
