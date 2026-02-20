@@ -3,6 +3,7 @@ import { getContract } from "../utils/blockchain.js";
 import { useGlobalState } from "./GlobalContext.js";
 import { getFromIPFS } from "../utils/ipfs.js";
 import ArtTransfer from "./ArtTransfer.js";
+import { ToastContainer, toast } from "react-toastify";
 
 const list = [
   {
@@ -55,7 +56,7 @@ export default function ArtShow() {
     contract.transferOwner(artHash, recipientAddress).then(() => {
       setSelectedArt(null);
       setShowTransferModal(false);
-      alert('Art transferred successfully!');
+      toast.info('Art transferred Pending!');
       getArtPieces();
     }).catch((error) => {
       console.error('Error transferring art:', error);
@@ -123,6 +124,14 @@ export default function ArtShow() {
             imageSrc={selectedArt !== null ? artList[selectedArt] : null}
           />
       )}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        theme="colored"
+      />
     </div> 
   );
 }

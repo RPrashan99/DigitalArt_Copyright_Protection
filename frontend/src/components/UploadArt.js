@@ -2,6 +2,7 @@ import { uploadToIPFS } from "../utils/ipfs.js";
 import { generateHash } from "../utils/hash.js";
 import { getContract } from "../utils/blockchain.js";
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function UploadArt() {
 
@@ -14,9 +15,9 @@ export default function UploadArt() {
   async function handleUpload() {
 
     if(!file){
-        alert("Please upload a file to register.");
-        return;
-      }
+      toast.error("Please upload a file to register.");
+      return;
+    }
 
     console.log("Uploading file:", file.name);
     const artHash = await generateHash(file);
@@ -28,7 +29,7 @@ export default function UploadArt() {
     console.log("Contract:", contract);
     await contract.registerArt(artHash, ipfsUrl);
 
-    alert("Artwork registered successfully!");
+    toast.success("Artwork registered successfully!");
     setFile("");
   }
 

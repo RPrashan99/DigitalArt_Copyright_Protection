@@ -1,10 +1,12 @@
 import { generateHash } from "../utils/hash.js";
 import { getContract } from "../utils/blockchain.js";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function VerifyArt() {
 
     const [file, setFile] = useState("");
+    const fileInputRef = useRef(null);
     
     async function handleChange(e) {
       setFile(e.target.files[0]);
@@ -13,7 +15,7 @@ export default function VerifyArt() {
     async function handleVerify(e){
 
       if(!file){
-        alert("Please upload a file to verify.");
+        toast.error("Please upload a file to verify.");
         return;
       }
 
@@ -24,17 +26,24 @@ export default function VerifyArt() {
         const owner = await contract.verifyArt(hash);
 
         if(owner === "0x0000000000000000000000000000000000000000"){
-            alert("This artwork is not registered.");
+          toast.info("This artwork is not registered on the blockchain.");
         } else {
-            alert(`This artwork is owned by: ${owner}`);
+          toast.success(`This artwork is owned by: ${owner}`);
         }
       }catch(err){
         console.error("Error verifying art:", err.reason || err);
-        alert("An error occurred: " + (err.reason || err.message || "Unknown error"));
+        toast.error("An error occurred while verifying the artwork.");
       }finally{
         setFile("");
+        resetFileInput();
       }
     }
+
+    const resetFileInput = () => { 
+      if (fileInputRef.current) { 
+        fileInputRef.current.value = ""; // clears the file input 
+      } 
+    };
 
     return (
         <div className='flex flex-col max-w-2xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100'>
@@ -61,8 +70,9 @@ export default function VerifyArt() {
         {/* File Input Wrapper */}
         <label className="flex flex-col items-center w-full cursor-pointer">
           <input 
-            type="file" 
-            onChange={handleChange} 
+            type="file"
+            ref={fileInputRef}
+            onChange={handleChange}
             className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
         </label>

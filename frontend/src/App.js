@@ -3,6 +3,7 @@ import { getAccount, getContract } from './utils/blockchain.js';
 import UploadArt from './components/UploadArt.js';
 import VerifyArt from './components/VerifyArt.js';
 import { useGlobalState } from './components/GlobalContext.js';
+import { ToastContainer, toast } from "react-toastify";
 
 function App() {
   let isRequestPending = false;
@@ -25,6 +26,8 @@ function App() {
 
         const contractInstance = await getContract();
         setContract(contractInstance);
+
+        toast.success('Wallet connected successfully!');
         
       } catch (error) {
         console.error('Wallet connection error:', error);
@@ -100,6 +103,14 @@ function App() {
         <UploadArt />
         <VerifyArt />
       </div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        theme="colored"
+      />
     </div>
   );
 }

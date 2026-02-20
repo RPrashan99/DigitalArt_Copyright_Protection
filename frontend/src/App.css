@@ -1,3 +1,15 @@
 .wallet-info {
   margin-bottom: 20px;
 }
+.Toastify__toast {
+  @apply rounded-lg shadow-lg;
+}
+.Toastify__toast--success {
+  @apply bg-green-600 text-white;
+}
+.Toastify__toast--error {
+  @apply bg-red-600 text-white;
+}
+.Toastify__toast--info {
+  @apply bg-blue-600 text-white;
+}
