@@ -29,6 +29,7 @@ export default function UploadArt() {
     await contract.registerArt(artHash, ipfsUrl);
 
     alert("Artwork registered successfully!");
+    setFile("");
   }
 
   return (

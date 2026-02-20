@@ -31,6 +31,8 @@ export default function VerifyArt() {
       }catch(err){
         console.error("Error verifying art:", err.reason || err);
         alert("An error occurred: " + (err.reason || err.message || "Unknown error"));
+      }finally{
+        setFile("");
       }
     }
 
