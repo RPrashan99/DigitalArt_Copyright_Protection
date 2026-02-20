@@ -3,7 +3,7 @@ import { getContract } from "../utils/blockchain.js";
 import { useGlobalState } from "./GlobalContext.js";
 import { getFromIPFS } from "../utils/ipfs.js";
 import ArtTransfer from "./ArtTransfer.js";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "../App.css";
 
 const list = [

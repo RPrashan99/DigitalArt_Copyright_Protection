@@ -2,7 +2,7 @@ import { uploadToIPFS } from "../utils/ipfs.js";
 import { generateHash } from "../utils/hash.js";
 import { getContract } from "../utils/blockchain.js";
 import { useRef, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 
 export default function UploadArt() {
 

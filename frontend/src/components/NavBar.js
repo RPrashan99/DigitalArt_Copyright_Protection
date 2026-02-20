@@ -70,9 +70,9 @@ export default function NavBar() {
           <button className="hidden sm:block text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors">
             Sign In
           </button>
-          <div className="wallet-info">
+          <div className="flex flex-col items-center">
             {walletAddress ? (
-              <p className="text-sm text-slate-700">Connected: {walletAddress.substring(0, 6)}...{walletAddress.substring(38)}</p>
+              <p className="text-sm text-white bg-green-500 p-1 rounded-lg">Connected: {walletAddress.substring(0, 6)}...{walletAddress.substring(38)}</p>
             ) : (
               <button className="bg-slate-900 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-200 transition-all active:scale-95"
                 onClick={connectWallet}>
