@@ -24,7 +24,7 @@ This project implements a blockchain-based system for securing and verifying dig
 
 1. **Clone the repository**
    ```sh
-   git clone <repository-url>
+   git clone https://github.com/RPrashan99/DigitalArt_Copyright_Protection.git
    cd DigitalArt_Copyright_Protection
    ```
 
